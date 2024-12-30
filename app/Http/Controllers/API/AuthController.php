@@ -8,25 +8,46 @@ use App\Services\OtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
+/**
+ * Class AuthController
+ * 
+ * Handles all authentication related operations including registration,
+ * login (both password and OTP based), and OTP verification.
+ */
 class AuthController extends Controller
 {
+    /**
+     * @var OtpService
+     */
     protected $otpService;
 
+    /**
+     * AuthController constructor.
+     * 
+     * @param OtpService $otpService Service for handling OTP operations
+     */
     public function __construct(OtpService $otpService)
     {
         $this->otpService = $otpService;
     }
 
     /**
-     * Register Step 1: Initial registration and send OTPs
+     * Register a new user.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @throws ValidationException
      */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'mobile' => 'required|string|size:10|unique:users',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8',
+            'email' => 'nullable|email|unique:users'
         ]);
 
         if ($validator->fails()) {
@@ -37,35 +58,46 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Store user data in session
-        $request->session()->put('registration_data', $request->all());
+        // Create user
+        $user = User::create([
+            'name' => $request->name,
+            'mobile' => $request->mobile,
+            'password' => Hash::make($request->password),
+            'email' => $request->email
+        ]);
 
-        // Send OTPs
-        $this->otpService->generateAndSendOtp($request->mobile, 'mobile');
-
-        // Check if mobile is WhatsApp number
-        if ($this->otpService->isWhatsappNumber($request->mobile)) {
-            $this->otpService->generateAndSendOtp($request->mobile, 'whatsapp');
+        // Send OTPs for verification
+        $this->otpService->generateAndSendOtp($user->mobile, 'mobile');
+        
+        if ($this->otpService->isWhatsappNumber($user->mobile)) {
+            $this->otpService->generateAndSendOtp($user->mobile, 'whatsapp');
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'OTPs sent successfully',
+            'message' => 'Registration successful. Please verify your mobile number.',
             'data' => [
-                'mobile' => $request->mobile,
-                'whatsapp_enabled' => $this->otpService->isWhatsappNumber($request->mobile)
+                'user' => $user,
+                'whatsapp_enabled' => $this->otpService->isWhatsappNumber($user->mobile)
             ]
-        ]);
+        ], 201);
     }
 
     /**
-     * Register Step 2: Verify OTPs and complete registration
+     * Verify registration OTPs.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @throws ValidationException
      */
     public function verifyRegistrationOtps(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'mobile' => 'required|string|size:10|exists:users',
             'mobile_otp' => 'required|string|size:6',
-            'whatsapp_otp' => 'required_if:whatsapp_enabled,true|string|size:6'
+            'whatsapp_otp' => 'required_if:whatsapp_enabled,true|string|size:6',
+            'whatsapp_enabled' => 'boolean'
         ]);
 
         if ($validator->fails()) {
@@ -76,22 +108,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Get registration data from session
-        $registrationData = $request->session()->get('registration_data');
-        
-        if (!$registrationData) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Registration session expired'
-            ], 400);
-        }
+        $user = User::where('mobile', $request->mobile)->first();
 
         // Verify OTPs
-        $mobileVerified = $this->otpService->verifyOtp($registrationData['mobile'], 'mobile', $request->mobile_otp);
+        $mobileVerified = $this->otpService->verifyOtp($user->mobile, 'mobile', $request->mobile_otp);
         
         $whatsappVerified = true;
-        if ($this->otpService->isWhatsappNumber($registrationData['mobile'])) {
-            $whatsappVerified = $this->otpService->verifyOtp($registrationData['mobile'], 'whatsapp', $request->whatsapp_otp);
+        if ($request->whatsapp_enabled) {
+            $whatsappVerified = $this->otpService->verifyOtp($user->mobile, 'whatsapp', $request->whatsapp_otp);
         }
 
         if (!$mobileVerified || !$whatsappVerified) {
@@ -101,23 +125,15 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // Create user
-        $user = User::create([
-            'name' => $registrationData['name'],
-            'mobile' => $registrationData['mobile'],
-            'password' => Hash::make($registrationData['password']),
-            'mobile_verified_at' => now()
-        ]);
-
-        // Clear session
-        $request->session()->forget('registration_data');
-
+        // Mark user as verified
+        $user->markPhoneAsVerified();
+        
         // Generate token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Registration successful',
+            'message' => 'Mobile number verified successfully',
             'data' => [
                 'user' => $user,
                 'token' => $token
@@ -126,7 +142,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Login with mobile using either password or OTP
+     * Login with mobile using either password or OTP.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @throws ValidationException
      */
     public function login(Request $request)
     {
@@ -194,7 +215,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Request OTP for login
+     * Request OTP for login.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @throws ValidationException
      */
     public function requestLoginOtp(Request $request)
     {
@@ -240,25 +266,17 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout
-     */
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out'
-        ]);
-    }
-
-    /**
-     * Resend OTP
+     * Resend OTP.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @throws ValidationException
      */
     public function resendOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'identifier' => 'required|string', // email or mobile
+            'mobile' => 'required|string|size:10',
             'type' => 'required|in:mobile,whatsapp'
         ]);
 
@@ -270,11 +288,44 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $this->otpService->generateAndSendOtp($request->identifier, $request->type);
+        $user = User::where('mobile', $request->mobile)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        if ($request->type === 'whatsapp' && !$this->otpService->isWhatsappNumber($user->mobile)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'WhatsApp not enabled for this number'
+            ], 400);
+        }
+
+        // Resend OTP
+        $this->otpService->generateAndSendOtp($user->mobile, $request->type);
 
         return response()->json([
             'status' => 'success',
             'message' => 'OTP resent successfully'
+        ]);
+    }
+
+    /**
+     * Logout user and revoke token.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged out successfully'
         ]);
     }
 }

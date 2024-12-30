@@ -233,3 +233,300 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## About
 
 Fresh Binge is committed to delivering fresh, high-quality fruits and vegetables to customers through a convenient online platform. Our pincode-based delivery system ensures efficient service across multiple locations in India, with real-time serviceability checks and location-specific delivery options.
+
+# FreshB E-commerce API
+
+A modern e-commerce API built with Laravel, focusing on fresh grocery delivery with features like service area management, OTP-based authentication, and real-time order tracking.
+
+## Features
+
+### Authentication
+- Mobile-based registration and login
+- Dual authentication methods:
+  - Password-based login
+  - OTP-based login (SMS + WhatsApp)
+- Optional email verification
+- Token-based authentication using Laravel Sanctum
+
+### User Management
+- Profile management
+- Multiple address support
+- Default address setting
+- Order history
+- Cart management
+
+### Product Management
+- Category and subcategory organization
+- Product variants
+- Stock management
+- Price management
+- Image handling
+
+### Order Management
+- Cart to order conversion
+- Multiple payment methods
+- Order tracking
+- Delivery slot selection
+- Service area validation
+
+### Location Management
+- Service area definition
+- Pincode-based serviceability check
+- Delivery slot management
+- Dynamic pricing based on location
+
+## API Documentation
+
+### Authentication
+
+#### Registration
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "password": "password123",
+    "email": "john@example.com" // Optional
+}
+```
+
+#### Registration Verification
+```http
+POST /api/auth/register/verify
+Content-Type: application/json
+
+{
+    "mobile": "9876543210",
+    "mobile_otp": "123456",
+    "whatsapp_otp": "123456",    // Required if WhatsApp enabled
+    "whatsapp_enabled": true
+}
+```
+
+#### Login
+Two methods available:
+
+1. Password-based Login:
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+    "mobile": "9876543210",
+    "login_type": "password",
+    "password": "password123"
+}
+```
+
+2. OTP-based Login:
+```http
+POST /api/auth/login/request-otp
+Content-Type: application/json
+
+{
+    "mobile": "9876543210"
+}
+```
+
+Then:
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+    "mobile": "9876543210",
+    "login_type": "otp",
+    "mobile_otp": "123456",
+    "whatsapp_otp": "123456",    // Required if WhatsApp enabled
+    "whatsapp_enabled": true
+}
+```
+
+### User Profile
+
+#### Get Profile
+```http
+GET /api/user/profile
+Authorization: Bearer {token}
+```
+
+#### Update Profile
+```http
+PUT /api/user/profile
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "mobile": "9876543210",
+    "profile_photo": "file"      // Optional
+}
+```
+
+#### Change Password
+```http
+POST /api/user/change-password
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "current_password": "old_password",
+    "new_password": "new_password",
+    "new_password_confirmation": "new_password"
+}
+```
+
+### Address Management
+
+#### List Addresses
+```http
+GET /api/addresses
+Authorization: Bearer {token}
+```
+
+#### Add Address
+```http
+POST /api/addresses
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "address_line1": "123 Main St",
+    "address_line2": "Apt 4B",       // Optional
+    "landmark": "Near Park",         // Optional
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "pincode": "400001",
+    "address_type": "home",          // home, office, other
+    "is_default": true,              // Optional
+    "service_location_id": 1
+}
+```
+
+#### Update Address
+```http
+PUT /api/addresses/{address_id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    // Same fields as Add Address
+}
+```
+
+#### Delete Address
+```http
+DELETE /api/addresses/{address_id}
+Authorization: Bearer {token}
+```
+
+#### Set Default Address
+```http
+POST /api/addresses/{address_id}/set-default
+Authorization: Bearer {token}
+```
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/freshb.git
+cd freshb
+```
+
+2. Install dependencies:
+```bash
+composer install
+```
+
+3. Copy environment file:
+```bash
+cp .env.example .env
+```
+
+4. Generate application key:
+```bash
+php artisan key:generate
+```
+
+5. Configure your database in `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=freshb
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+6. Run migrations:
+```bash
+php artisan migrate
+```
+
+7. Start the server:
+```bash
+php artisan serve
+```
+
+## Environment Variables
+
+```env
+# Application
+APP_NAME=FreshB
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=freshb
+DB_USERNAME=root
+DB_PASSWORD=
+
+# SMS Gateway (example)
+SMS_PROVIDER_API_KEY=
+SMS_PROVIDER_SENDER_ID=
+
+# WhatsApp Gateway (example)
+WHATSAPP_API_KEY=
+WHATSAPP_SENDER_NUMBER=
+
+# File Storage
+FILESYSTEM_DISK=public
+
+# JWT
+JWT_SECRET=
+JWT_TTL=60
+```
+
+## Testing
+
+Run the test suite:
+```bash
+php artisan test
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, email support@freshb.com or join our Slack channel.

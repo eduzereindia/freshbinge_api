@@ -1,902 +1,442 @@
 {
-	"info": {
-		"_postman_id": "your-postman-id",
-		"name": "Fresh Binge E-commerce API",
-		"description": "API collection for Fresh Binge E-commerce platform",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:8000/api",
-			"type": "string"
-		},
-		{
-			"key": "token",
-			"value": "your-auth-token",
-			"type": "string"
-		}
-	],
-	"item": [
-		{
-			"name": "Authentication",
-			"item": [
-				{
-					"name": "Register - Step 1",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/register",
-							"host": ["{{base_url}}"],
-							"path": ["api", "register"]
-						},
-						"description": "Step 1: Register with credentials and receive OTPs"
-					}
-				},
-				{
-					"name": "Register - Step 2 (Verify OTPs)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/register/verify",
-							"host": ["{{base_url}}"],
-							"path": ["api", "register", "verify"]
-						},
-						"description": "Step 2: Verify registration OTPs"
-					}
-				},
-				{
-					"name": "Login with Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"password\",\n    \"password\": \"password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login"]
-						},
-						"description": "Login with mobile and password"
-					}
-				},
-				{
-					"name": "Request Login OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/login/request-otp",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login", "request-otp"]
-						},
-						"description": "Request OTP for login"
-					}
-				},
-				{
-					"name": "Login with OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"otp\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login"]
-						},
-						"description": "Login with OTP verification"
-					}
-				},
-				{
-					"name": "Login - Step 1",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"password\"\n}"
-						},
-						"description": "Step 1: Login with mobile and choose login type (password/otp)"
-					}
-				},
-				{
-					"name": "Login - Step 2 (Password)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"password\": \"password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/login/verify",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login", "verify"]
-						},
-						"description": "Step 2: Verify login with password"
-					}
-				},
-				{
-					"name": "Login - Step 2 (OTP)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/login/verify",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login", "verify"]
-						},
-						"description": "Step 2: Verify login with OTPs"
-					}
-				},
-				{
-					"name": "Resend OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"identifier\": \"9876543210\",\n    \"type\": \"mobile\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/resend-otp",
-							"host": ["{{base_url}}"],
-							"path": ["api", "resend-otp"]
-						},
-						"description": "Resend OTP for email/mobile/whatsapp"
-					}
-				},
-				{
-					"name": "Logout",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/logout",
-							"host": ["{{base_url}}"],
-							"path": ["api", "logout"]
-						},
-						"description": "Logout and invalidate token"
-					}
-				}
-			],
-			"description": "Authentication endpoints with OTP verification"
-		},
-		{
-			"name": "Categories",
-			"item": [
-				{
-					"name": "List Categories",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/categories",
-							"host": ["{{base_url}}"],
-							"path": ["categories"]
-						}
-					}
-				},
-				{
-					"name": "Create Category",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "Fresh Fruits",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "Fresh and organic fruits",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/categories",
-							"host": ["{{base_url}}"],
-							"path": ["categories"]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Products",
-			"item": [
-				{
-					"name": "List Products",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/products",
-							"host": ["{{base_url}}"],
-							"path": ["products"]
-						}
-					}
-				},
-				{
-					"name": "Create Product",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "Fresh Apples",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "Fresh and juicy apples",
-									"type": "text"
-								},
-								{
-									"key": "category_id",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][weight]",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][unit]",
-									"value": "kg",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][price]",
-									"value": "100",
-									"type": "text"
-								},
-								{
-									"key": "images[]",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/products",
-							"host": ["{{base_url}}"],
-							"path": ["products"]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Cart",
-			"item": [
-				{
-					"name": "View Cart",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/cart",
-							"host": ["{{base_url}}"],
-							"path": ["cart"]
-						}
-					}
-				},
-				{
-					"name": "Add to Cart",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"product_id\": 1,\n    \"variant_id\": 1,\n    \"quantity\": 2\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/cart/add",
-							"host": ["{{base_url}}"],
-							"path": ["cart", "add"]
-						}
-					}
-				},
-				{
-					"name": "Update Cart Item",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"quantity\": 3\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/cart/items/1",
-							"host": ["{{base_url}}"],
-							"path": ["cart", "items", "1"]
-						}
-					}
-				},
-				{
-					"name": "Remove Cart Item",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/cart/items/1",
-							"host": ["{{base_url}}"],
-							"path": ["cart", "items", "1"]
-						}
-					}
-				},
-				{
-					"name": "Clear Cart",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/cart",
-							"host": ["{{base_url}}"],
-							"path": ["cart"]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Service Locations",
-			"description": "Endpoints for managing service locations and checking delivery availability",
-			"item": [
-				{
-					"name": "List Service Locations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/service-locations",
-							"host": ["{{base_url}}"],
-							"path": ["api", "service-locations"]
-						},
-						"description": "Get list of all active service locations"
-					},
-					"response": [
-						{
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/api/service-locations",
-									"host": ["{{base_url}}"],
-									"path": ["api", "service-locations"]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "success",
-								"data": [
-									{
-										"pincode": "682001",
-										"area_name": "Ernakulam South",
-										"district": "Ernakulam",
-										"state": "Kerala"
-									},
-									{
-										"pincode": "682016",
-										"area_name": "Edappally",
-										"district": "Ernakulam",
-										"state": "Kerala"
-									}
-								]
-							}
-						}
-					]
-				},
-				{
-					"name": "Check Serviceability",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"pincode\": \"682001\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/check-serviceability",
-							"host": ["{{base_url}}"],
-							"path": ["api", "check-serviceability"]
-						},
-						"description": "Check if delivery is available for a pincode"
-					},
-					"response": [
-						{
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"pincode\": \"682001\"\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/check-serviceability",
-									"host": ["{{base_url}}"],
-									"path": ["api", "check-serviceability"]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "success",
-								"message": "Delivery is available",
-								"data": {
-									"area_name": "Ernakulam South",
-									"district": "Ernakulam",
-									"state": "Kerala"
-								}
-							}
-						},
-						{
-							"name": "Error Response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"pincode\": \"999999\"\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/check-serviceability",
-									"host": ["{{base_url}}"],
-									"path": ["api", "check-serviceability"]
-								}
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "error",
-								"message": "Delivery is not available at this pincode"
-							}
-						}
-					]
-				},
-				{
-					"name": "Add Service Location (Admin)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"pincode\": \"682001\",\n    \"area_name\": \"Ernakulam South\",\n    \"district\": \"Ernakulam\",\n    \"state\": \"Kerala\",\n    \"country\": \"India\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/service-locations",
-							"host": ["{{base_url}}"],
-							"path": ["api", "service-locations"]
-						},
-						"description": "Add a new serviceable pincode (Admin only)"
-					},
-					"response": [
-						{
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"pincode\": \"682001\",\n    \"area_name\": \"Ernakulam South\",\n    \"district\": \"Ernakulam\",\n    \"state\": \"Kerala\",\n    \"country\": \"India\"\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/service-locations",
-									"host": ["{{base_url}}"],
-									"path": ["api", "service-locations"]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "success",
-								"message": "Service location added successfully",
-								"data": {
-									"pincode": "682001",
-									"area_name": "Ernakulam South",
-									"district": "Ernakulam",
-									"state": "Kerala",
-									"country": "India",
-									"is_active": true,
-									"id": 1,
-									"created_at": "2024-12-30T10:45:30.000000Z",
-									"updated_at": "2024-12-30T10:45:30.000000Z"
-								}
-							}
-						}
-					]
-				},
-				{
-					"name": "Update Service Location (Admin)",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"area_name\": \"Updated Area Name\",\n    \"district\": \"Updated District\",\n    \"is_active\": false\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/service-locations/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "service-locations", "1"]
-						},
-						"description": "Update service location details (Admin only)"
-					},
-					"response": [
-						{
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"area_name\": \"Updated Area Name\",\n    \"district\": \"Updated District\",\n    \"is_active\": false\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/service-locations/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "service-locations", "1"]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "success",
-								"message": "Service location updated successfully",
-								"data": {
-									"id": 1,
-									"pincode": "682001",
-									"area_name": "Updated Area Name",
-									"district": "Updated District",
-									"state": "Kerala",
-									"country": "India",
-									"is_active": false,
-									"created_at": "2024-12-30T10:45:30.000000Z",
-									"updated_at": "2024-12-30T10:46:15.000000Z"
-								}
-							}
-						}
-					]
-				},
-				{
-					"name": "Delete Service Location (Admin)",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/service-locations/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "service-locations", "1"]
-						},
-						"description": "Remove a serviceable pincode (Admin only)"
-					},
-					"response": [
-						{
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/service-locations/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "service-locations", "1"]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"body": {
-								"status": "success",
-								"message": "Service location removed successfully"
-							}
-						}
-					]
-				}
-			]
-		}
-	]
+    "info": {
+        "name": "FreshB E-commerce API",
+        "description": "API collection for FreshB, a modern e-commerce platform for fresh grocery delivery",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "description": "Authentication related endpoints including registration and login",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\",\n    \"email\": \"john@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "register"]
+                        },
+                        "description": "Register a new user"
+                    }
+                },
+                {
+                    "name": "Verify Registration",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mobile\": \"9876543210\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register/verify",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "register", "verify"]
+                        },
+                        "description": "Verify registration OTPs"
+                    }
+                },
+                {
+                    "name": "Login with Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"password\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "login"]
+                        },
+                        "description": "Login with mobile and password"
+                    }
+                },
+                {
+                    "name": "Request Login OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mobile\": \"9876543210\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login/request-otp",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "login", "request-otp"]
+                        },
+                        "description": "Request OTP for login"
+                    }
+                },
+                {
+                    "name": "Login with OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"otp\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "login"]
+                        },
+                        "description": "Login with OTP verification"
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "auth", "logout"]
+                        },
+                        "description": "Logout and invalidate token"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User Profile",
+            "description": "User profile management endpoints",
+            "item": [
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/user/profile",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "user", "profile"]
+                        },
+                        "description": "Get user profile details"
+                    }
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "John Doe",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "john@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile",
+                                    "value": "9876543210",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "profile_photo",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/user/profile",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "user", "profile"]
+                        },
+                        "description": "Update user profile"
+                    }
+                },
+                {
+                    "name": "Change Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"old_password\",\n    \"new_password\": \"new_password\",\n    \"new_password_confirmation\": \"new_password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/user/change-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "user", "change-password"]
+                        },
+                        "description": "Change user password"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Address Management",
+            "description": "Address management endpoints",
+            "item": [
+                {
+                    "name": "List Addresses",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/addresses",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "addresses"]
+                        },
+                        "description": "Get all addresses for the authenticated user"
+                    }
+                },
+                {
+                    "name": "Add Address",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"address_line1\": \"123 Main St\",\n    \"address_line2\": \"Apt 4B\",\n    \"landmark\": \"Near Park\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\",\n    \"address_type\": \"home\",\n    \"is_default\": true,\n    \"service_location_id\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/addresses",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "addresses"]
+                        },
+                        "description": "Add a new address"
+                    }
+                },
+                {
+                    "name": "Update Address",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"address_line1\": \"123 Main St\",\n    \"address_line2\": \"Apt 4B\",\n    \"landmark\": \"Near Park\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\",\n    \"address_type\": \"home\",\n    \"is_default\": true,\n    \"service_location_id\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/addresses/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "addresses", "1"]
+                        },
+                        "description": "Update an existing address"
+                    }
+                },
+                {
+                    "name": "Delete Address",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/addresses/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "addresses", "1"]
+                        },
+                        "description": "Delete an address"
+                    }
+                },
+                {
+                    "name": "Set Default Address",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/addresses/1/set-default",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "addresses", "1", "set-default"]
+                        },
+                        "description": "Set an address as default"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        }
+    ]
 }
