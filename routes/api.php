@@ -39,7 +39,7 @@ Route::prefix('auth')->group(function () {
  * Public Routes
  * These routes do not require authentication to access
  */
-Route::group(function () {
+Route::group(['prefix' => ''], function () {
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}', [CategoryController::class, 'show']);
