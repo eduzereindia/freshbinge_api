@@ -64,6 +64,42 @@ Check if your area is serviceable using the `/check-serviceability` endpoint wit
   - Update area details
   - Enable/disable delivery to specific pincodes
 
+## Authentication
+
+The application uses a secure multi-factor authentication system with OTP verification:
+
+### Registration
+1. Initial registration with name, email, mobile, and password
+2. OTP verification:
+   - Email OTP verification
+   - Mobile SMS OTP verification
+   - WhatsApp OTP verification (if mobile number is registered on WhatsApp)
+
+### Login
+1. Initial login with email and password
+2. Multi-factor OTP verification:
+   - Email OTP verification
+   - Mobile SMS OTP verification
+   - WhatsApp OTP verification (if applicable)
+
+### OTP Features
+- 6-digit numeric OTPs
+- 10-minute validity period
+- Resend functionality available
+- Separate verification tracking for email and mobile
+
+### API Endpoints
+
+#### Authentication
+```
+POST /api/register           - Step 1: Register with credentials
+POST /api/register/verify   - Step 2: Verify registration OTPs
+POST /api/login             - Step 1: Login with credentials
+POST /api/login/verify      - Step 2: Verify login OTPs
+POST /api/resend-otp        - Resend OTP for email/mobile/whatsapp
+POST /api/logout            - Logout (requires authentication)
+```
+
 ## Technical Stack
 
 - **Framework**: Laravel 10.x

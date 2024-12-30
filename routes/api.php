@@ -8,6 +8,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\ServiceLocationController;
+use App\Http\Controllers\API\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +22,11 @@ use App\Http\Controllers\API\ServiceLocationController;
 */
 
 // Public routes
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/verify', [AuthController::class, 'verifyRegistrationOtps']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login/verify', [AuthController::class, 'verifyLoginOtps']);
+Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -49,7 +53,7 @@ Route::delete('/cart/clear', [CartController::class, 'clear']);
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // User routes
-    Route::post('/logout', [UserController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'profile']);
     Route::put('/profile', [UserController::class, 'updateProfile']);
     Route::post('/change-password', [UserController::class, 'changePassword']);

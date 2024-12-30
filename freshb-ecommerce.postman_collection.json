@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "unique-id",
+		"_postman_id": "your-postman-id",
 		"name": "Fresh Binge E-commerce API",
-		"description": "API collection for Fresh Binge, an online fruits and vegetables e-commerce platform",
+		"description": "API collection for Fresh Binge E-commerce platform",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [
@@ -22,45 +22,143 @@
 			"name": "Authentication",
 			"item": [
 				{
-					"name": "Register",
+					"name": "Register - Step 1",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/register",
+							"raw": "{{base_url}}/api/register",
 							"host": ["{{base_url}}"],
-							"path": ["register"]
-						}
+							"path": ["api", "register"]
+						},
+						"description": "Step 1: Register with credentials and receive OTPs"
 					}
 				},
 				{
-					"name": "Login",
+					"name": "Register - Step 2 (Verify OTPs)",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"email_otp\": \"123456\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/login",
+							"raw": "{{base_url}}/api/register/verify",
 							"host": ["{{base_url}}"],
-							"path": ["login"]
-						}
+							"path": ["api", "register", "verify"]
+						},
+						"description": "Step 2: Verify registration OTPs"
+					}
+				},
+				{
+					"name": "Login - Step 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						},
+						"description": "Step 1: Login with credentials and receive OTPs"
+					}
+				},
+				{
+					"name": "Login - Step 2 (Verify OTPs)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email_otp\": \"123456\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login/verify",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login", "verify"]
+						},
+						"description": "Step 2: Verify login OTPs"
+					}
+				},
+				{
+					"name": "Resend OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"john@example.com\",\n    \"type\": \"email\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resend-otp",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resend-otp"]
+						},
+						"description": "Resend OTP for email/mobile/whatsapp"
 					}
 				},
 				{
@@ -69,19 +167,26 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/logout",
+							"raw": "{{base_url}}/api/logout",
 							"host": ["{{base_url}}"],
-							"path": ["logout"]
-						}
+							"path": ["api", "logout"]
+						},
+						"description": "Logout and invalidate token"
 					}
 				}
-			]
+			],
+			"description": "Authentication endpoints with OTP verification"
 		},
 		{
 			"name": "Categories",
