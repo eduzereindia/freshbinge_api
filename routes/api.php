@@ -7,6 +7,7 @@ use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\ServiceLocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,11 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/{product}/variants', [ProductController::class, 'getVariants']);
 
+// Service Location routes
+Route::get('/service-locations', [ServiceLocationController::class, 'index']);
+Route::post('/check-serviceability', [ServiceLocationController::class, 'checkServiceability']);
+Route::get('/service-locations/{serviceLocation}/delivery-slots', [ServiceLocationController::class, 'getDeliverySlots']);
+
 // Cart routes
 Route::get('/cart', [CartController::class, 'index']);
 Route::post('/cart/add', [CartController::class, 'addItem']);
@@ -57,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
         Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+        Route::apiResource('service-locations', ServiceLocationController::class)->except(['index']);
     });
 
     // Cart merge route

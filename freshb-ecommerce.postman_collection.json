@@ -1,10 +1,22 @@
 {
 	"info": {
-		"_postman_id": "e5a2f8d3-4b6b-4e2c-8f9d-9f2b8c3d1e0f",
-		"name": "FreshB E-commerce API",
-		"description": "API collection for FreshB E-commerce platform",
+		"_postman_id": "unique-id",
+		"name": "Fresh Binge E-commerce API",
+		"description": "API collection for Fresh Binge, an online fruits and vegetables e-commerce platform",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "your-auth-token",
+			"type": "string"
+		}
+	],
 	"item": [
 		{
 			"name": "Authentication",
@@ -13,73 +25,43 @@
 					"name": "Register",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"+1234567890\"\n}"
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/register",
-							"path": ["api", "register"]
-						},
-						"description": "Register a new user"
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "POST",
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"+1234567890\"\n}"
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"body": "{\n    \"status\": true,\n    \"message\": \"User registered successfully\",\n    \"token\": \"1|abcdef123456...\"\n}"
+							"raw": "{{base_url}}/register",
+							"host": ["{{base_url}}"],
+							"path": ["register"]
 						}
-					]
+					}
 				},
 				{
 					"name": "Login",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/login",
-							"path": ["api", "login"]
-						},
-						"description": "Login user"
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "POST",
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"body": "{\n    \"status\": true,\n    \"token\": \"1|abcdef123456...\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\",\n        \"phone\": \"+1234567890\"\n    }\n}"
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
 						}
-					]
+					}
 				},
 				{
 					"name": "Logout",
@@ -88,14 +70,15 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/logout",
-							"path": ["api", "logout"]
-						},
-						"description": "Logout user"
+							"raw": "{{base_url}}/logout",
+							"host": ["{{base_url}}"],
+							"path": ["logout"]
+						}
 					}
 				}
 			]
@@ -107,23 +90,13 @@
 					"name": "List Categories",
 					"request": {
 						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/categories",
-							"path": ["api", "categories"]
-						},
-						"description": "Get all categories"
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET"
-							},
-							"status": "OK",
-							"code": 200,
-							"body": "{\n    \"status\": true,\n    \"categories\": [\n        {\n            \"id\": 1,\n            \"name\": \"Electronics\",\n            \"slug\": \"electronics\",\n            \"description\": \"Electronic items\",\n            \"image\": \"categories/electronics.jpg\",\n            \"children\": [\n                {\n                    \"id\": 2,\n                    \"name\": \"Smartphones\",\n                    \"slug\": \"smartphones\"\n                }\n            ]\n        }\n    ]\n}"
+							"raw": "{{base_url}}/categories",
+							"host": ["{{base_url}}"],
+							"path": ["categories"]
 						}
-					]
+					}
 				},
 				{
 					"name": "Create Category",
@@ -132,7 +105,8 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -140,31 +114,26 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Electronics",
+									"value": "Fresh Fruits",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Electronic items",
-									"type": "text"
-								},
-								{
-									"key": "parent_id",
-									"value": "null",
+									"value": "Fresh and organic fruits",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "electronics.jpg"
+									"src": []
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/api/categories",
-							"path": ["api", "categories"]
-						},
-						"description": "Create a new category (Admin only)"
+							"raw": "{{base_url}}/categories",
+							"host": ["{{base_url}}"],
+							"path": ["categories"]
+						}
 					}
 				}
 			]
@@ -176,21 +145,12 @@
 					"name": "List Products",
 					"request": {
 						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/products?category_id=1&search=phone",
-							"path": ["api", "products"],
-							"query": [
-								{
-									"key": "category_id",
-									"value": "1"
-								},
-								{
-									"key": "search",
-									"value": "phone"
-								}
-							]
-						},
-						"description": "Get all products with optional filters"
+							"raw": "{{base_url}}/products",
+							"host": ["{{base_url}}"],
+							"path": ["products"]
+						}
 					}
 				},
 				{
@@ -200,7 +160,8 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -208,71 +169,46 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "iPhone 13",
-									"type": "text"
-								},
-								{
-									"key": "category_id",
-									"value": "2",
+									"value": "Fresh Apples",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Latest iPhone model",
+									"value": "Fresh and juicy apples",
 									"type": "text"
 								},
 								{
-									"key": "price",
-									"value": "999.99",
+									"key": "category_id",
+									"value": "1",
 									"type": "text"
 								},
 								{
-									"key": "stock",
+									"key": "variants[0][weight]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][unit]",
+									"value": "kg",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][price]",
 									"value": "100",
-									"type": "text"
-								},
-								{
-									"key": "sku",
-									"value": "IPHONE13-128",
 									"type": "text"
 								},
 								{
 									"key": "images[]",
 									"type": "file",
-									"src": "iphone13.jpg"
-								},
-								{
-									"key": "variants[0][name]",
-									"value": "iPhone 13 128GB Black",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][sku]",
-									"value": "IPHONE13-128-BLACK",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][price]",
-									"value": "999.99",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][stock]",
-									"value": "50",
-									"type": "text"
-								},
-								{
-									"key": "variants[0][attributes]",
-									"value": "{\"color\":\"black\",\"storage\":\"128GB\"}",
-									"type": "text"
+									"src": []
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/api/products",
-							"path": ["api", "products"]
-						},
-						"description": "Create a new product with variants (Admin only)"
+							"raw": "{{base_url}}/products",
+							"host": ["{{base_url}}"],
+							"path": ["products"]
+						}
 					}
 				}
 			]
@@ -281,26 +217,22 @@
 			"name": "Cart",
 			"item": [
 				{
-					"name": "Get Cart",
+					"name": "View Cart",
 					"request": {
 						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/cart",
-							"path": ["api", "cart"]
-						},
-						"description": "Get current cart"
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "GET"
-							},
-							"status": "OK",
-							"code": 200,
-							"body": "{\n    \"status\": true,\n    \"cart\": {\n        \"id\": 1,\n        \"items\": [\n            {\n                \"id\": 1,\n                \"product\": {\n                    \"id\": 1,\n                    \"name\": \"iPhone 13\"\n                },\n                \"variant\": {\n                    \"id\": 1,\n                    \"name\": \"iPhone 13 128GB Black\"\n                },\n                \"quantity\": 2,\n                \"price\": 999.99\n            }\n        ]\n    },\n    \"total\": 1999.98\n}"
+							"raw": "{{base_url}}/cart",
+							"host": ["{{base_url}}"],
+							"path": ["cart"]
 						}
-					]
+					}
 				},
 				{
 					"name": "Add to Cart",
@@ -308,19 +240,25 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json"
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"product_id\": 1,\n    \"product_variant_id\": 1,\n    \"quantity\": 2\n}"
+							"raw": "{\n    \"product_id\": 1,\n    \"variant_id\": 1,\n    \"quantity\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/cart/add",
-							"path": ["api", "cart", "add"]
-						},
-						"description": "Add item to cart"
+							"raw": "{{base_url}}/cart/add",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "add"]
+						}
 					}
 				},
 				{
@@ -329,91 +267,127 @@
 						"method": "PUT",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json"
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 3\n}"
+							"raw": "{\n    \"quantity\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/cart/items/1",
-							"path": ["api", "cart", "items", "1"]
-						},
-						"description": "Update cart item quantity"
+							"raw": "{{base_url}}/cart/items/1",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "items", "1"]
+						}
 					}
 				},
 				{
 					"name": "Remove Cart Item",
 					"request": {
 						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/cart/items/1",
-							"path": ["api", "cart", "items", "1"]
-						},
-						"description": "Remove item from cart"
+							"raw": "{{base_url}}/cart/items/1",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "items", "1"]
+						}
 					}
 				},
 				{
 					"name": "Clear Cart",
 					"request": {
 						"method": "DELETE",
-						"url": {
-							"raw": "{{base_url}}/api/cart/clear",
-							"path": ["api", "cart", "clear"]
-						},
-						"description": "Clear all items from cart"
-					}
-				},
-				{
-					"name": "Merge Guest Cart",
-					"request": {
-						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"value": "Bearer {{token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/cart/merge",
-							"path": ["api", "cart", "merge"]
-						},
-						"description": "Merge guest cart with user cart after login"
+							"raw": "{{base_url}}/cart",
+							"host": ["{{base_url}}"],
+							"path": ["cart"]
+						}
 					}
 				}
 			]
 		},
 		{
-			"name": "Address",
+			"name": "Service Locations",
+			"description": "Endpoints for managing service locations and checking delivery availability",
 			"item": [
 				{
-					"name": "List Addresses",
+					"name": "List Service Locations",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/addresses",
-							"path": ["api", "addresses"]
+							"raw": "{{base_url}}/api/service-locations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "service-locations"]
 						},
-						"description": "Get user addresses"
-					}
+						"description": "Get list of all active service locations"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/service-locations",
+									"host": ["{{base_url}}"],
+									"path": ["api", "service-locations"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "success",
+								"data": [
+									{
+										"pincode": "682001",
+										"area_name": "Ernakulam South",
+										"district": "Ernakulam",
+										"state": "Kerala"
+									},
+									{
+										"pincode": "682016",
+										"area_name": "Edappally",
+										"district": "Ernakulam",
+										"state": "Kerala"
+									}
+								]
+							}
+						}
+					]
 				},
 				{
-					"name": "Create Address",
+					"name": "Check Serviceability",
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
-							},
 							{
 								"key": "Content-Type",
 								"value": "application/json"
@@ -421,19 +395,249 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Home\",\n    \"address_line1\": \"123 Main St\",\n    \"address_line2\": \"Apt 4B\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"postal_code\": \"10001\",\n    \"country\": \"United States\",\n    \"phone\": \"+1234567890\",\n    \"is_default\": true\n}"
+							"raw": "{\n    \"pincode\": \"682001\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/addresses",
-							"path": ["api", "addresses"]
+							"raw": "{{base_url}}/api/check-serviceability",
+							"host": ["{{base_url}}"],
+							"path": ["api", "check-serviceability"]
 						},
-						"description": "Create new address"
-					}
+						"description": "Check if delivery is available for a pincode"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pincode\": \"682001\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/check-serviceability",
+									"host": ["{{base_url}}"],
+									"path": ["api", "check-serviceability"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "success",
+								"message": "Delivery is available",
+								"data": {
+									"area_name": "Ernakulam South",
+									"district": "Ernakulam",
+									"state": "Kerala"
+								}
+							}
+						},
+						{
+							"name": "Error Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pincode\": \"999999\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/check-serviceability",
+									"host": ["{{base_url}}"],
+									"path": ["api", "check-serviceability"]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "error",
+								"message": "Delivery is not available at this pincode"
+							}
+						}
+					]
 				},
 				{
-					"name": "Set Default Address",
+					"name": "Add Service Location (Admin)",
 					"request": {
 						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pincode\": \"682001\",\n    \"area_name\": \"Ernakulam South\",\n    \"district\": \"Ernakulam\",\n    \"state\": \"Kerala\",\n    \"country\": \"India\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/service-locations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "service-locations"]
+						},
+						"description": "Add a new serviceable pincode (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pincode\": \"682001\",\n    \"area_name\": \"Ernakulam South\",\n    \"district\": \"Ernakulam\",\n    \"state\": \"Kerala\",\n    \"country\": \"India\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/service-locations",
+									"host": ["{{base_url}}"],
+									"path": ["api", "service-locations"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "success",
+								"message": "Service location added successfully",
+								"data": {
+									"pincode": "682001",
+									"area_name": "Ernakulam South",
+									"district": "Ernakulam",
+									"state": "Kerala",
+									"country": "India",
+									"is_active": true,
+									"id": 1,
+									"created_at": "2024-12-30T10:45:30.000000Z",
+									"updated_at": "2024-12-30T10:45:30.000000Z"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Service Location (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"area_name\": \"Updated Area Name\",\n    \"district\": \"Updated District\",\n    \"is_active\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/service-locations/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "service-locations", "1"]
+						},
+						"description": "Update service location details (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"area_name\": \"Updated Area Name\",\n    \"district\": \"Updated District\",\n    \"is_active\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/service-locations/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "service-locations", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "success",
+								"message": "Service location updated successfully",
+								"data": {
+									"id": 1,
+									"pincode": "682001",
+									"area_name": "Updated Area Name",
+									"district": "Updated District",
+									"state": "Kerala",
+									"country": "India",
+									"is_active": false,
+									"created_at": "2024-12-30T10:45:30.000000Z",
+									"updated_at": "2024-12-30T10:46:15.000000Z"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Service Location (Admin)",
+					"request": {
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -441,25 +645,46 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/addresses/1/set-default",
-							"path": ["api", "addresses", "1", "set-default"]
+							"raw": "{{base_url}}/api/service-locations/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "service-locations", "1"]
 						},
-						"description": "Set address as default"
-					}
+						"description": "Remove a serviceable pincode (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/service-locations/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "service-locations", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"status": "success",
+								"message": "Service location removed successfully"
+							}
+						}
+					]
 				}
 			]
-		}
-	],
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:8000",
-			"type": "string"
-		},
-		{
-			"key": "token",
-			"value": "your_auth_token_here",
-			"type": "string"
 		}
 	]
 }
