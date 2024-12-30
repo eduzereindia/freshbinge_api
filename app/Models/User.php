@@ -47,6 +47,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /**
+     * Check if user has verified email
+     */
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    /**
+     * Check if user has verified mobile
+     */
+    public function hasVerifiedMobile()
+    {
+        return !is_null($this->mobile_verified_at);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

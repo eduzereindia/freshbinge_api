@@ -39,7 +39,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"mobile\": \"9876543210\",\n    \"password\": \"password123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/register",
@@ -67,7 +67,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email_otp\": \"123456\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+							"raw": "{\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/register/verify",
@@ -75,6 +75,90 @@
 							"path": ["api", "register", "verify"]
 						},
 						"description": "Step 2: Verify registration OTPs"
+					}
+				},
+				{
+					"name": "Login with Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"password\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						},
+						"description": "Login with mobile and password"
+					}
+				},
+				{
+					"name": "Request Login OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login/request-otp",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login", "request-otp"]
+						},
+						"description": "Request OTP for login"
+					}
+				},
+				{
+					"name": "Login with OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"otp\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						},
+						"description": "Login with OTP verification"
 					}
 				},
 				{
@@ -95,18 +179,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+							"raw": "{\n    \"mobile\": \"9876543210\",\n    \"login_type\": \"password\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "login"]
-						},
-						"description": "Step 1: Login with credentials and receive OTPs"
+						"description": "Step 1: Login with mobile and choose login type (password/otp)"
 					}
 				},
 				{
-					"name": "Login - Step 2 (Verify OTPs)",
+					"name": "Login - Step 2 (Password)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -123,14 +202,42 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email_otp\": \"123456\",\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+							"raw": "{\n    \"password\": \"password123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/login/verify",
 							"host": ["{{base_url}}"],
 							"path": ["api", "login", "verify"]
 						},
-						"description": "Step 2: Verify login OTPs"
+						"description": "Step 2: Verify login with password"
+					}
+				},
+				{
+					"name": "Login - Step 2 (OTP)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mobile_otp\": \"123456\",\n    \"whatsapp_otp\": \"123456\",\n    \"whatsapp_enabled\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login/verify",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login", "verify"]
+						},
+						"description": "Step 2: Verify login with OTPs"
 					}
 				},
 				{
@@ -151,7 +258,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"identifier\": \"john@example.com\",\n    \"type\": \"email\"\n}"
+							"raw": "{\n    \"identifier\": \"9876543210\",\n    \"type\": \"mobile\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/resend-otp",

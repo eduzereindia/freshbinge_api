@@ -25,7 +25,7 @@ use App\Http\Controllers\API\AuthController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/register/verify', [AuthController::class, 'verifyRegistrationOtps']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/login/verify', [AuthController::class, 'verifyLoginOtps']);
+Route::post('/login/request-otp', [AuthController::class, 'requestLoginOtp']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 
 // Category routes

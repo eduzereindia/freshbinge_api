@@ -25,7 +25,6 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'mobile' => 'required|string|size:10|unique:users',
             'password' => 'required|string|min:8'
         ]);
@@ -42,7 +41,6 @@ class AuthController extends Controller
         $request->session()->put('registration_data', $request->all());
 
         // Send OTPs
-        $this->otpService->generateAndSendOtp($request->email, 'email');
         $this->otpService->generateAndSendOtp($request->mobile, 'mobile');
 
         // Check if mobile is WhatsApp number
@@ -54,7 +52,6 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'OTPs sent successfully',
             'data' => [
-                'email' => $request->email,
                 'mobile' => $request->mobile,
                 'whatsapp_enabled' => $this->otpService->isWhatsappNumber($request->mobile)
             ]
@@ -67,7 +64,6 @@ class AuthController extends Controller
     public function verifyRegistrationOtps(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email_otp' => 'required|string|size:6',
             'mobile_otp' => 'required|string|size:6',
             'whatsapp_otp' => 'required_if:whatsapp_enabled,true|string|size:6'
         ]);
@@ -91,7 +87,6 @@ class AuthController extends Controller
         }
 
         // Verify OTPs
-        $emailVerified = $this->otpService->verifyOtp($registrationData['email'], 'email', $request->email_otp);
         $mobileVerified = $this->otpService->verifyOtp($registrationData['mobile'], 'mobile', $request->mobile_otp);
         
         $whatsappVerified = true;
@@ -99,7 +94,7 @@ class AuthController extends Controller
             $whatsappVerified = $this->otpService->verifyOtp($registrationData['mobile'], 'whatsapp', $request->whatsapp_otp);
         }
 
-        if (!$emailVerified || !$mobileVerified || !$whatsappVerified) {
+        if (!$mobileVerified || !$whatsappVerified) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid OTP'
@@ -109,10 +104,8 @@ class AuthController extends Controller
         // Create user
         $user = User::create([
             'name' => $registrationData['name'],
-            'email' => $registrationData['email'],
             'mobile' => $registrationData['mobile'],
             'password' => Hash::make($registrationData['password']),
-            'email_verified_at' => now(),
             'mobile_verified_at' => now()
         ]);
 
@@ -133,13 +126,17 @@ class AuthController extends Controller
     }
 
     /**
-     * Login Step 1: Send OTPs
+     * Login with mobile using either password or OTP
      */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string'
+            'mobile' => 'required|string|size:10',
+            'login_type' => 'required|in:password,otp',
+            'password' => 'required_if:login_type,password|string',
+            'mobile_otp' => 'required_if:login_type,otp|string|size:6',
+            'whatsapp_otp' => 'required_if:whatsapp_enabled,true|string|size:6',
+            'whatsapp_enabled' => 'boolean'
         ]);
 
         if ($validator->fails()) {
@@ -150,87 +147,38 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('mobile', $request->mobile)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid credentials'
-            ], 401);
+                'message' => 'User not found'
+            ], 404);
         }
 
-        // Store user ID in session
-        $request->session()->put('login_user_id', $user->id);
+        if ($request->login_type === 'password') {
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid password'
+                ], 401);
+            }
+        } else {
+            // Verify OTPs
+            $mobileVerified = $this->otpService->verifyOtp($user->mobile, 'mobile', $request->mobile_otp);
+            
+            $whatsappVerified = true;
+            if ($request->whatsapp_enabled) {
+                $whatsappVerified = $this->otpService->verifyOtp($user->mobile, 'whatsapp', $request->whatsapp_otp);
+            }
 
-        // Send OTPs
-        $this->otpService->generateAndSendOtp($user->email, 'email');
-        $this->otpService->generateAndSendOtp($user->mobile, 'mobile');
-
-        // Check if mobile is WhatsApp number
-        if ($this->otpService->isWhatsappNumber($user->mobile)) {
-            $this->otpService->generateAndSendOtp($user->mobile, 'whatsapp');
+            if (!$mobileVerified || !$whatsappVerified) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid OTP'
+                ], 400);
+            }
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'OTPs sent successfully',
-            'data' => [
-                'email' => $user->email,
-                'mobile' => $user->mobile,
-                'whatsapp_enabled' => $this->otpService->isWhatsappNumber($user->mobile)
-            ]
-        ]);
-    }
-
-    /**
-     * Login Step 2: Verify OTPs and complete login
-     */
-    public function verifyLoginOtps(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email_otp' => 'required|string|size:6',
-            'mobile_otp' => 'required|string|size:6',
-            'whatsapp_otp' => 'required_if:whatsapp_enabled,true|string|size:6'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation Error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Get user ID from session
-        $userId = $request->session()->get('login_user_id');
-        
-        if (!$userId) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Login session expired'
-            ], 400);
-        }
-
-        $user = User::find($userId);
-
-        // Verify OTPs
-        $emailVerified = $this->otpService->verifyOtp($user->email, 'email', $request->email_otp);
-        $mobileVerified = $this->otpService->verifyOtp($user->mobile, 'mobile', $request->mobile_otp);
-        
-        $whatsappVerified = true;
-        if ($this->otpService->isWhatsappNumber($user->mobile)) {
-            $whatsappVerified = $this->otpService->verifyOtp($user->mobile, 'whatsapp', $request->whatsapp_otp);
-        }
-
-        if (!$emailVerified || !$mobileVerified || !$whatsappVerified) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid OTP'
-            ], 400);
-        }
-
-        // Clear session
-        $request->session()->forget('login_user_id');
 
         // Generate token
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -241,6 +189,52 @@ class AuthController extends Controller
             'data' => [
                 'user' => $user,
                 'token' => $token
+            ]
+        ]);
+    }
+
+    /**
+     * Request OTP for login
+     */
+    public function requestLoginOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|string|size:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::where('mobile', $request->mobile)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        // Send OTPs
+        $this->otpService->generateAndSendOtp($user->mobile, 'mobile');
+
+        // Check if mobile is WhatsApp number
+        $whatsappEnabled = false;
+        if ($this->otpService->isWhatsappNumber($user->mobile)) {
+            $this->otpService->generateAndSendOtp($user->mobile, 'whatsapp');
+            $whatsappEnabled = true;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'OTPs sent successfully',
+            'data' => [
+                'mobile' => $user->mobile,
+                'whatsapp_enabled' => $whatsappEnabled
             ]
         ]);
     }
@@ -265,7 +259,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'identifier' => 'required|string', // email or mobile
-            'type' => 'required|in:email,mobile,whatsapp'
+            'type' => 'required|in:mobile,whatsapp'
         ]);
 
         if ($validator->fails()) {
