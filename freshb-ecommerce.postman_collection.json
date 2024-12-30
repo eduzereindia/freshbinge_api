@@ -1,0 +1,465 @@
+{
+	"info": {
+		"_postman_id": "e5a2f8d3-4b6b-4e2c-8f9d-9f2b8c3d1e0f",
+		"name": "FreshB E-commerce API",
+		"description": "API collection for FreshB E-commerce platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"path": ["api", "register"]
+						},
+						"description": "Register a new user"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"+1234567890\"\n}"
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"body": "{\n    \"status\": true,\n    \"message\": \"User registered successfully\",\n    \"token\": \"1|abcdef123456...\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"path": ["api", "login"]
+						},
+						"description": "Login user"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"status\": true,\n    \"token\": \"1|abcdef123456...\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\",\n        \"phone\": \"+1234567890\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"path": ["api", "logout"]
+						},
+						"description": "Logout user"
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"path": ["api", "categories"]
+						},
+						"description": "Get all categories"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET"
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"status\": true,\n    \"categories\": [\n        {\n            \"id\": 1,\n            \"name\": \"Electronics\",\n            \"slug\": \"electronics\",\n            \"description\": \"Electronic items\",\n            \"image\": \"categories/electronics.jpg\",\n            \"children\": [\n                {\n                    \"id\": 2,\n                    \"name\": \"Smartphones\",\n                    \"slug\": \"smartphones\"\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Electronics",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Electronic items",
+									"type": "text"
+								},
+								{
+									"key": "parent_id",
+									"value": "null",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "electronics.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"path": ["api", "categories"]
+						},
+						"description": "Create a new category (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List Products",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/products?category_id=1&search=phone",
+							"path": ["api", "products"],
+							"query": [
+								{
+									"key": "category_id",
+									"value": "1"
+								},
+								{
+									"key": "search",
+									"value": "phone"
+								}
+							]
+						},
+						"description": "Get all products with optional filters"
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "iPhone 13",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Latest iPhone model",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "999.99",
+									"type": "text"
+								},
+								{
+									"key": "stock",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "sku",
+									"value": "IPHONE13-128",
+									"type": "text"
+								},
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": "iphone13.jpg"
+								},
+								{
+									"key": "variants[0][name]",
+									"value": "iPhone 13 128GB Black",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][sku]",
+									"value": "IPHONE13-128-BLACK",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][price]",
+									"value": "999.99",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][stock]",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "variants[0][attributes]",
+									"value": "{\"color\":\"black\",\"storage\":\"128GB\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products",
+							"path": ["api", "products"]
+						},
+						"description": "Create a new product with variants (Admin only)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/cart",
+							"path": ["api", "cart"]
+						},
+						"description": "Get current cart"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET"
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"status\": true,\n    \"cart\": {\n        \"id\": 1,\n        \"items\": [\n            {\n                \"id\": 1,\n                \"product\": {\n                    \"id\": 1,\n                    \"name\": \"iPhone 13\"\n                },\n                \"variant\": {\n                    \"id\": 1,\n                    \"name\": \"iPhone 13 128GB Black\"\n                },\n                \"quantity\": 2,\n                \"price\": 999.99\n            }\n        ]\n    },\n    \"total\": 1999.98\n}"
+						}
+					]
+				},
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": 1,\n    \"product_variant_id\": 1,\n    \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/add",
+							"path": ["api", "cart", "add"]
+						},
+						"description": "Add item to cart"
+					}
+				},
+				{
+					"name": "Update Cart Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/items/1",
+							"path": ["api", "cart", "items", "1"]
+						},
+						"description": "Update cart item quantity"
+					}
+				},
+				{
+					"name": "Remove Cart Item",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/api/cart/items/1",
+							"path": ["api", "cart", "items", "1"]
+						},
+						"description": "Remove item from cart"
+					}
+				},
+				{
+					"name": "Clear Cart",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/api/cart/clear",
+							"path": ["api", "cart", "clear"]
+						},
+						"description": "Clear all items from cart"
+					}
+				},
+				{
+					"name": "Merge Guest Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cart/merge",
+							"path": ["api", "cart", "merge"]
+						},
+						"description": "Merge guest cart with user cart after login"
+					}
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "List Addresses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/addresses",
+							"path": ["api", "addresses"]
+						},
+						"description": "Get user addresses"
+					}
+				},
+				{
+					"name": "Create Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Home\",\n    \"address_line1\": \"123 Main St\",\n    \"address_line2\": \"Apt 4B\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"postal_code\": \"10001\",\n    \"country\": \"United States\",\n    \"phone\": \"+1234567890\",\n    \"is_default\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/addresses",
+							"path": ["api", "addresses"]
+						},
+						"description": "Create new address"
+					}
+				},
+				{
+					"name": "Set Default Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/addresses/1/set-default",
+							"path": ["api", "addresses", "1", "set-default"]
+						},
+						"description": "Set address as default"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "your_auth_token_here",
+			"type": "string"
+		}
+	]
+}
